@@ -1,52 +1,162 @@
-import React from "react";
+// app/about/page.tsx
+
 import FluidAnimation from "@/components/custom/FluidAnimation";
 import { TeamCarousel } from "@/components/custom/TeamCarousel";
-import Globe from "@/components/custom/Globe";
 import RounderBorderAbout from "@/components/custom/RounderBorderWapper";
+import { IconBrandLinkedin } from "@tabler/icons-react";
 
-const About = () => {
+// Server-side fetch
+async function getTeamData() {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/team`
+  );
+
+  if (!response.ok) {
+    return { faculty: null, lead: null, members: [] };
+  }
+
+  const data = await response.json();
+  const allMembers = data.members || [];
+
+  // Find faculty advisor
+  let faculty =
+    allMembers.find((member: any) => member.title === "Faculty Advisor") || null;
+
+  // Temporary fallback
+  faculty = faculty || {};
+  faculty.bio =
+    faculty.bio ||
+    "Associate Professor at MMEC";
+  faculty.tags = faculty.tags || [
+    "Information Retrieval",
+    "Automata Theory",
+  ];
+
+  // Find lead
+  const lead = allMembers.find((member: any) => member.is_lead) || null;
+
+  // Remove faculty & lead from carousel
+  const members = allMembers.filter(
+    (member: any) => !member.is_faculty && !member.is_lead
+  );
+
+  return { faculty, lead, members };
+}
+
+export default async function About() {
+  const { faculty, lead, members } = await getTeamData();
+
   return (
-    <div className="w-full justify-center bg-gradient-to-b from-[#0a0a0a] to-[#373737] overflow-hidden">
-      {/* Faculty Advisor Section */}
-      <div className="flex w-full mx-auto max-w-4xl justify-between items-center gap-6 p-6 flex-col md:flex-row">
-        {/* Left */}
-        <FluidAnimation path={"/images/vishalsir.jpeg"} />
-        {/* Right */}
-        <div className="text-center md:text-left">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500 mb-3">
-            Dr. Vishal Gupta
-          </h1>
-          <p className="text-white text-sm md:text-base mt-2">
-            Faculty Advisor
-          </p>
-        </div>
-      </div>
+    <div className="w-full overflow-hidden bg-gradient-to-b from-[#0a0a0a] to-[#373737]">
+      {/* Leadership Section */}
+      <section className="mx-auto max-w-7xl px-6 py-12">
+        <div className="grid grid-cols-1 gap-20 lg:grid-cols-2">
+          {/* ================= FACULTY ================= */}
+          <div className="flex flex-col items-center">
+            <FluidAnimation
+              path={faculty?.avatar || "/images/vishalsir.jpeg"}
+            />
 
-      {/* GDG Lead Section */}
-      <div className="flex w-full mx-auto max-w-4xl justify-between items-center gap-6 p-6 flex-col-reverse md:flex-row">
-        {/* Left */}
-        <div className="text-center md:text-left">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500 mb-3">
-            Mr. Parag Sharma
-          </h1>
-          <p className="text-white text-sm md:text-base mt-2">
-            GDGoC Organizer
-          </p>
-        </div>
-        {/* Right */}
-        <FluidAnimation path={"/images/parag.jpeg"} />
-      </div>
+            <div className="mt-8 flex max-w-xl flex-col items-center text-center">
+              <h1 className="mb-3 text-3xl font-bold text-transparent bg-gradient-to-r from-gray-200 to-gray-500 bg-clip-text sm:text-4xl lg:text-5xl">
+                {faculty?.name || "Dr. Vishal Gupta"}
+              </h1>
 
-      {/* Team Carousel */}
-      <div className="p-16">
-        <TeamCarousel />
-      </div>
-      {/* <GlobeDemo /> */}
-      <Globe />
-      {/* description */}
+              <p className="text-sm text-white md:text-base">
+                {process.env.FACULTY_ADVISOR_TITLE || "Faculty Advisor"}
+              </p>
+
+              {faculty?.bio && (
+                <p className="mt-6 text-sm leading-relaxed text-white/80 md:text-base">
+                  {faculty.bio}
+                </p>
+              )}
+
+              {faculty?.tags?.length ? (
+                <div className="mt-6 flex flex-wrap justify-center gap-2">
+                  {faculty.tags.slice(0, 5).map((tag: string) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs text-white/80"
+                    >
+                      {tag.replace(/^[-_]+/, "")}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+
+              <div className="mt-6 flex justify-center">
+                <a
+                  href="https://www.linkedin.com/in/sahara-vishal/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-sm text-white transition hover:bg-white/20"
+                >
+                  <IconBrandLinkedin size={16} />
+                  LinkedIn
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* ================= LEAD ================= */}
+          <div className="flex flex-col items-center">
+            <FluidAnimation
+              path={lead?.avatar || "/images/colored-gdg.png"}
+            />
+
+            <div className="mt-8 flex max-w-xl flex-col items-center text-center">
+              <h1 className="mb-3 text-3xl font-bold text-transparent bg-gradient-to-r from-gray-200 to-gray-500 bg-clip-text sm:text-4xl lg:text-5xl">
+                {lead?.name || "Organizer"}
+              </h1>
+
+              <p className="text-sm text-white md:text-base">
+                GDGoC Organizer
+              </p>
+
+              {lead?.bio && (
+                <p className="mt-6 text-sm leading-relaxed text-white/80 md:text-base">
+                  {lead.bio}
+                </p>
+              )}
+
+              {lead?.tags?.length ? (
+                <div className="mt-6 flex flex-wrap justify-center gap-2">
+                  {lead.tags.slice(0, 5).map((tag: string) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs text-white/80"
+                    >
+                      {tag.replace(/^[-_]+/, "")}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+
+              {lead?.linkedin && (
+                <div className="mt-6 flex justify-center">
+                  <a
+                    href={lead.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-sm text-white transition hover:bg-white/20"
+                  >
+                    <IconBrandLinkedin size={16} />
+                    LinkedIn
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Team Members */}
+      <section className="px-5">
+        <TeamCarousel members={members} />
+      </section>
+
       <RounderBorderAbout />
     </div>
   );
-};
-
-export default About;
+}

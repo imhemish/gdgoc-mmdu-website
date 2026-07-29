@@ -1,15 +1,16 @@
 "use client";
 
-import React from "react";
 import {
   Mail,
   MapPin,
-  Twitter,
-  Instagram,
-  Github,
-  Linkedin,
-  Youtube,
 } from "lucide-react";
+import {
+  FaGithub,
+  FaInstagram,
+  FaLinkedin,
+  FaYoutube,
+} from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 
@@ -47,17 +48,16 @@ const Footer = () => {
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold">
-                    Google Developer Groups
+                    Google Developer Group
                   </h2>
                   <p className="text-sm text-gray-400">
-                    On Campus • Maharishi Markandeshwar (Deemed to be
-                    University)
+                    On Campus • {process.env.NEXT_PUBLIC_INST_NAME_SHORT}
                   </p>
                 </div>
               </div>
               <p className="text-sm text-gray-300 max-w-xl">
-                GDSC MM(DU) is a student-led community supported by Google that
-                foster learning, collaboration, and innovation in technical
+                GDGoC {process.env.NEXT_PUBLIC_INST_NAME_SHORT} is a student-led community supported by Google that
+                fosters learning, collaboration, and innovation in technical
                 areas among university students.
               </p>
             </div>
@@ -81,7 +81,7 @@ const Footer = () => {
                     className="text-gray-400 mt-1 flex-shrink-0"
                   />
                   <p className="text-gray-300">
-                    MM Education Complex,MM(DU),Mullana
+                    MM Education Complex, MM(DU), Mullana
                     <br />
                     (Ambala),Mullana,Haryana,
                     <br />
@@ -97,39 +97,49 @@ const Footer = () => {
             <h3 className="text-sm font-semibold mb-4">Follow us on:</h3>
             <div className="flex flex-wrap gap-6 sm:gap-4">
               <a
-                href="#"
+                href="https://x.com/gdsc_mmdu"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-colors"
                 aria-label="Twitter"
               >
-                <Twitter size={20} />
+                <FaXTwitter size={20} />
               </a>
               <a
-                href="#"
+                href="https://instagram.com/gdg_on_campus_mmdu"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-colors"
                 aria-label="Instagram"
               >
-                <Instagram size={20} />
+                <FaInstagram size={20} />
               </a>
               <a
-                href="#"
+                href="https://github.com/Developer-Student-Clubs-MMDU"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-colors"
-                aria-label="Github"
+                aria-label="GitHub"
               >
-                <Github size={20} />
+                <FaGithub size={20} />
               </a>
               <a
-                href="#"
+                href="https://www.linkedin.com/company/79700754"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-colors"
                 aria-label="LinkedIn"
               >
-                <Linkedin size={20} />
+                <FaLinkedin size={20} />
               </a>
               <a
-                href="#"
+                href="https://www.youtube.com/@gdgmmdu"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-colors"
                 aria-label="YouTube"
               >
-                <Youtube size={20} />
+                <FaYoutube size={20} />
               </a>
             </div>
           </div>

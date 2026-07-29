@@ -4,7 +4,6 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Toaster } from "react-hot-toast";
-import HeaderDemo from "@/components/HeaderDemo";
 
 const googleSans = localFont({
   src: [
@@ -33,11 +32,10 @@ const googleSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "GDG On Campus, MMDU",
-  description: "GDG On Campus, MMDU",
+  title: "GDGoC "+process.env.NEXT_PUBLIC_INST_NAME_SHORT,
+  description: "Student-led developer community, supported by Google, at " + process.env.NEXT_PUBLIC_INST_NAME_LONG,
   icons: {
-    icon: "/favicon.ico", // Assumes favicon.ico is in the app directory
-    // You can also add multiple sizes if you have them
+    icon: "/favicon.ico",
     apple: [
       { url: "/favicon.ico" },
       { url: "/favicon.ico", sizes: "180x180", type: "image/png" },

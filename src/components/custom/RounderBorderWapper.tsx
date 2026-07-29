@@ -2,7 +2,7 @@ import React from "react";
 
 const RounderBorderAbout = () => {
   return (
-    <div className="bg-white flex flex-col sm:flex-row justify-between">
+    <div className="bg-white flex flex-col sm:flex-row justify-between" >
       {/* Left Border */}
       <div className="bg-zinc-900/95 w-10 h-32 sm:h-72 rounded-t-full p-2 -ml-5 hidden sm:block"></div>
 
@@ -11,12 +11,11 @@ const RounderBorderAbout = () => {
         <div className="pt-6 sm:pt-10 h-full bg-white flex flex-col justify-between items-center rounded-b-3xl pb-6 sm:pb-10 mb-6 sm:mb-10 w-full sm:w-auto">
           <p className="px-5 sm:px-40 text-sm sm:text-xl font-semibold text-center">
             In short, it's a community of developers who are interested in
-            Google's developer technologies from the Android, Chrome, Drive, and
-            Google Cloud platforms to product APIs like the Cast API, Maps API,
-            YouTube API, and many more.
+            Google's developer technologies from the Android, Flutter, and
+            Google Cloud platforms to product APIs like the Maps API, Programmable Search Engine, etc.
           </p>
           <p className="text-xs sm:text-lg px-5 sm:px-20 text-center">
-            GDG On Campus MM(DU) is a student-led community supported by Google
+            GDG On Campus {process.env.NEXT_PUBLIC_INST_NAME_SHORT} is a student-led community supported by Google
             that fosters learning, collaboration, and innovation in technical
             areas among university students.
           </p>

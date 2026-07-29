@@ -2,19 +2,20 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: [
-      "res.cloudinary.com",
-      "images.unsplash.com",
-      "assets.aceternity.com",
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'assets.aceternity.com'
+      }
     ],
-    // Alternatively, you can use remotePatterns for more specific control
-    // remotePatterns: [
-    //   {
-    //     protocol: 'https',
-    //     hostname: 'res.cloudinary.com',
-    //     pathname: '/dsyrwclfs/image/upload/**',
-    //   },
-    // ],
   },
 };
 

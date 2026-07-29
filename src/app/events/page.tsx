@@ -4,7 +4,7 @@ import React from "react";
 
 const Events = () => {
   return (
-    <div>
+    <div style={{ backgroundColor: "#fef2f2" }}>
       <TenureEvents />
       <RounderBorderEvents />
     </div>

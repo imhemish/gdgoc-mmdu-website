@@ -25,9 +25,9 @@ const Header = () => {
         <Link href="/" className="flex items-center gap-2 text-white">
           <Image src="/images/logo.png" alt="GDG Logo" width={40} height={40} />
           <div className="text-sm ">
-            <div className="font-bold text-md">Google Developer Groups</div>
-            <div className="text-gray-400 text-xs  sm:block">
-              Maharishi Markendeshwar University
+            <div className="font-bold text-xs md:text-sm">Google Developer Group on Campus</div>
+            <div className="text-gray-400 md:text-xs text-xxs  sm:block">
+              {process.env.NEXT_PUBLIC_INST_NAME_LONG}
             </div>
           </div>
         </Link>

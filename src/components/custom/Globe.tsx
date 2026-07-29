@@ -53,10 +53,10 @@ const Globe = () => {
         />
         <p className="text-sm md:text-lg max-w-lg px-12 text-gray-600 leading-relaxed">
           <span className="font-semibold">
-            Google Developer Groups on Campus
+            Google Developer Group on Campus
           </span>{" "}
-          Maharishi Markandeshwar (Deemed to be University) - Mullana (GDG on
-          Campus MM(DU)) is a young community of developers with the motive{" "}
+           {process.env.NEXT_PUBLIC_INST_NAME_SHORT} {" "}
+          is a young community of developers with the motive{" "}
           <span className="font-medium">
             by the developers, for the developers, and from developers.
           </span>
