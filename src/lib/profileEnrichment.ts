@@ -1,4 +1,5 @@
 import type { UserProfileEnrichment } from "@/types/team";
+import { decode } from "he";
 
 const REVALIDATE = 60 * 60 * 24 * 30; // 30 days
 
@@ -83,7 +84,7 @@ function extractBio(html: string): string | null {
 
   const bio = decodeJsString(match[1]);
   
-  return decodeUnicode(bio) || null;
+  return decode(decodeUnicode(bio)) || null;
 }
 
 function extractLinkedIn(html: string): string | null {

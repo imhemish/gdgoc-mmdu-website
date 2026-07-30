@@ -91,7 +91,7 @@ function getSlideshareEmbed(slideshareUrl?: string | null) {
 
   if (!match) return slideshareUrl;
 
-  return `https://www.slideshare.net/slideshow/embed_code/key/${match[1]}`;
+  return `https://www.slideshare.net/slideshow/embed_code/${match[1]}`;
 }
 
 function getYoutubeEmbed(videoUrl?: string | null) {
@@ -159,7 +159,7 @@ export async function GET(
   try {
     response = await fetch(upstream, {
       headers: { Accept: "application/json" },
-      next: { revalidate: 60 },
+      next: { revalidate: 360 },
     });
   } catch {
     return Response.json(

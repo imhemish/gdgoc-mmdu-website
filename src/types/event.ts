@@ -51,7 +51,7 @@ export interface GDGEvent {
   url: string;
   static_url: string;
   video_url: string | null;
-  slideshare_url: string | null;
+  slideshare_url?: string | null;
   cropped_banner_url: string;
   cropped_picture_url: string;
   total_attendees: number;

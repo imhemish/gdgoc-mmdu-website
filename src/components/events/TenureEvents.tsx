@@ -143,11 +143,9 @@ function EventCard({
           }`}
       >
         {/* Title */}
-        <Link href={`/event/${event.id}`}>
           <p className="text-neutral-900 dark:text-neutral-100 font-semibold text-sm md:text-base leading-snug hover:underline line-clamp-2">
             {event.title}
           </p>
-        </Link>
 
         {/* Time */}
         <p className="text-xs text-neutral-500 dark:text-neutral-400 font-mono tracking-wide">
@@ -247,6 +245,7 @@ export function TenureEvents() {
       ...allEvents.map((event, index) => ({
         title: formatDate(event.start_date),
         icon: event.cropped_picture_url,
+        href: `/event/${event.id}`,
         content: (
           <EventCard
             key={event.url}

@@ -1,26 +1,17 @@
-import { useEffect, useState, useCallback } from "react";
-import { useParams } from "next/navigation";
-import { IconBrandLinkedin, IconBrandTwitter, IconMapPin, IconUsers, IconVideo, IconX, IconChevronLeft, IconChevronRight, IconCalendar, IconExternalLink } from "@tabler/icons-react";
-import type {
-  GDGEvent,
-  EventPerson,
-  EventPartnerSponsor,
-  EventWrapupPhoto,
-} from "@/types/event";
+import { notFound } from "next/navigation";
+import {
+  IconBrandLinkedin,
+  IconBrandTwitter,
+  IconMapPin,
+  IconUsers,
+  IconVideo,
+  IconCalendar,
+  IconExternalLink,
+} from "@tabler/icons-react";
+import type { GDGEvent, EventPerson, EventPartnerSponsor } from "@/types/event";
+import PhotoGallery from "./PhotoGallery";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
-
-function toIST(iso: string) {
-  return new Date(iso).toLocaleString("en-IN", {
-    timeZone: "Asia/Kolkata",
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
-}
 
 function formatDateRange(start: string, end: string) {
   const s = new Date(start);
@@ -78,7 +69,7 @@ function audienceBadge(type: string) {
   return map[type] ?? { label: type, color: "#9AA0A6" };
 }
 
-// ─── Sub-components ─────────────────────────────────────────────────────────
+// ─── Sub-components (no hooks needed, safe in a server component) ──────────
 
 function PersonCard({ person }: { person: EventPerson }) {
   return (
@@ -133,160 +124,10 @@ function PersonCard({ person }: { person: EventPerson }) {
 
 function SponsorCard({ item }: { item: EventPartnerSponsor }) {
   return (
-    <a
-      href={item.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="sponsor-card"
-    >
-      {item.logo?.url && (
-        <img src={item.logo.url} alt={item.name} className="sponsor-logo" />
-      )}
+    <a href={item.url} target="_blank" rel="noopener noreferrer" className="sponsor-card">
+      {item.logo?.url && <img src={item.logo.url} alt={item.name} className="sponsor-logo" />}
       <span className="sponsor-name">{item.name}</span>
     </a>
-  );
-}
-
-function PhotoGallery({ photos }: { photos: EventWrapupPhoto[] }) {
-  const [open, setOpen] = useState(false);
-  const [idx, setIdx] = useState(0);
-  const [loading, setLoading] = useState(false);
-
-  const sorted = [...photos].sort((a, b) => a.order - b.order);
-
-  const openImage = (i: number) => {
-    setIdx(i);
-    setLoading(true);
-    setOpen(true);
-  };
-
-  const changeImage = useCallback(
-    (newIdx: number) => {
-      setLoading(true);
-      setIdx((newIdx + sorted.length) % sorted.length);
-    },
-    [sorted.length]
-  );
-
-  const prev = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      changeImage(idx - 1);
-    },
-    [idx, changeImage]
-  );
-
-  const next = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      changeImage(idx + 1);
-    },
-    [idx, changeImage]
-  );
-
-  useEffect(() => {
-    if (!open) return;
-
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") changeImage(idx - 1);
-      if (e.key === "ArrowRight") changeImage(idx + 1);
-      if (e.key === "Escape") setOpen(false);
-    };
-
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [open, idx, changeImage]);
-
-  // Preload adjacent images
-  useEffect(() => {
-    if (!open || sorted.length < 2) return;
-
-    const nextImg = new window.Image();
-    nextImg.src = sorted[(idx + 1) % sorted.length].picture.url;
-
-    const prevImg = new window.Image();
-    prevImg.src = sorted[(idx - 1 + sorted.length) % sorted.length].picture.url;
-  }, [idx, open, sorted]);
-
-  if (!sorted.length) return null;
-
-  return (
-    <>
-      <div className="gallery-grid">
-        {sorted.map((photo, i) => (
-          <button
-            key={photo.id}
-            className="gallery-thumb"
-            onClick={() => openImage(i)}
-            aria-label={`View photo ${i + 1}`}
-          >
-            <img
-              src={photo.picture.thumbnail_url || photo.picture.url}
-              alt={`Event photo ${i + 1}`}
-            />
-            <div className="gallery-thumb-overlay" />
-          </button>
-        ))}
-      </div>
-
-      {open && (
-        <div
-          className="lightbox-backdrop"
-          onClick={() => setOpen(false)}
-        >
-          <button
-            className="lightbox-close"
-            onClick={() => setOpen(false)}
-            aria-label="Close"
-          >
-            <IconX size={22} />
-          </button>
-
-          <button
-            className="lightbox-nav lightbox-prev"
-            onClick={prev}
-            aria-label="Previous"
-          >
-            <IconChevronLeft size={28} />
-          </button>
-
-          <div
-            className="lightbox-img-wrap"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {loading && (
-              <div className="lightbox-spinner">
-                <div className="spinner" />
-              </div>
-            )}
-
-            <img
-              key={sorted[idx].picture.url}
-              src={sorted[idx].picture.url}
-              alt={`Event photo ${idx + 1}`}
-              className="lightbox-img"
-              style={{
-                opacity: loading ? 0 : 1,
-                transition: "opacity 0.2s ease",
-              }}
-              onLoad={() => setLoading(false)}
-            />
-
-            <p className="lightbox-counter">
-              {idx + 1} / {sorted.length}
-            </p>
-          </div>
-
-          <button
-            className="lightbox-nav lightbox-next"
-            onClick={next}
-            aria-label="Next"
-          >
-            <IconChevronRight size={28} />
-          </button>
-        </div>
-      )}
-    </>
   );
 }
 
@@ -299,55 +140,39 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
   );
 }
 
+// ─── Data fetching ───────────────────────────────────────────────────────────
+
+async function getEvent(slug: string): Promise<GDGEvent | null> {
+  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const res = await fetch(`${base}/api/event/${slug}`, {
+
+    next: {
+      revalidate: 36000,
+    },
+  });
+
+  if (!res.ok) return null;
+  return res.json();
+}
+
 // ─── Page ───────────────────────────────────────────────────────────────────
 
-export default function EventPage() {
-  const params = useParams();
-  const slug = params?.slug as string;
+export default async function EventPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const event = await getEvent(slug);
 
-  const [event, setEvent] = useState<GDGEvent | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [now, setNow] = useState(new Date());
-
-  useEffect(() => {
-    const interval = setInterval(() => setNow(new Date()), 60_000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    if (!slug) return;
-    fetch(`/api/event/${slug}`)
-      .then((r) => {
-        if (!r.ok) throw new Error("Not found");
-        return r.json();
-      })
-      .then(setEvent)
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
-  }, [slug]);
-
-  if (loading) {
-    return (
-      <div className="page-state">
-        <div className="spinner" />
-        <p>Loading event…</p>
-      </div>
-    );
+  if (!event) {
+    notFound();
   }
 
-  if (error || !event) {
-    return (
-      <div className="page-state">
-        <p className="error-text">Event not found.</p>
-      </div>
-    );
-  }
-
+  const now = new Date();
   const badge = audienceBadge(event.audience_type);
   const ctaLabel = getCTALabel(event, now);
-  const isLive =
-    now >= new Date(event.start_date) && now <= new Date(event.end_date);
+  const isLive = now >= new Date(event.start_date) && now <= new Date(event.end_date);
   const isPast = now > new Date(event.end_date);
 
   const peopleSections: { label: string; people: EventPerson[] }[] = [
@@ -933,27 +758,19 @@ export default function EventPage() {
           border: none;
         }
 
-        /* ── Loading / error ── */
-        .page-state {
-          min-height: 60vh;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 16px;
-          color: #666;
-          background: #0a0a0a;
+      /* ── Slides ── */
+        .slides-wrap {
+          border-radius: 14px;
+          overflow: hidden;
+          width: 100%;
+          background: #000;
         }
-        .spinner {
-          width: 36px;
-          height: 36px;
-          border: 3px solid rgba(255,255,255,0.1);
-          border-top-color: #4285F4;
-          border-radius: 50%;
-          animation: spin 0.75s linear infinite;
+        .slides-wrap iframe {
+        
+          width: 102%;
+          aspect-ratio: 16/10;
+          border: none;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .error-text { color: #888; }
 
         @media (max-width: 600px) {
           .people-grid { grid-template-columns: 1fr; }
@@ -994,11 +811,7 @@ export default function EventPage() {
               )}
               {badge.label}
             </span>
-            {isLive && (
-              <span className="badge badge-live">
-                ● Live now
-              </span>
-            )}
+            {isLive && <span className="badge badge-live">● Live now</span>}
             {isPast && (
               <span
                 className="badge"
@@ -1062,9 +875,10 @@ export default function EventPage() {
           {event.description && (
             <div className="section">
               <SectionHeading>About this event</SectionHeading>
-              <p className="description-block"
+              <div
+                className="description-block"
                 dangerouslySetInnerHTML={{ __html: event.description }}
-              ></p>
+              ></div>
             </div>
           )}
 
@@ -1106,9 +920,7 @@ export default function EventPage() {
           {/* Gallery */}
           {event.event_wrapup_photos?.length > 0 && (
             <div className="section">
-              <SectionHeading>
-                Photos ({event.event_wrapup_photos.length})
-              </SectionHeading>
+              <SectionHeading>Photos ({event.event_wrapup_photos.length})</SectionHeading>
               <PhotoGallery photos={event.event_wrapup_photos} />
             </div>
           )}
@@ -1122,6 +934,20 @@ export default function EventPage() {
                   src={event.video_url.replace("watch?v=", "embed/")}
                   allowFullScreen
                   title="Event recording"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Presentation slides */}
+          {event.slideshare_url && (
+            <div className="section">
+              <SectionHeading>Slides</SectionHeading>
+              <div className="slides-wrap">
+                <iframe
+                  src={event.slideshare_url}
+                  allowFullScreen
+                  title="Event presentation slides"
                 />
               </div>
             </div>
