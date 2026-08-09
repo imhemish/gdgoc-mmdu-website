@@ -1,4 +1,12 @@
 import { notFound } from "next/navigation";
+
+import type {
+  GDGEvent,
+  EventPerson,
+  EventPartnerSponsor,
+} from "@/types/event";
+
+import { getGDGEvent } from "@/lib/event";
 import {
   IconBrandLinkedin,
   IconBrandTwitter,
@@ -8,7 +16,6 @@ import {
   IconCalendar,
   IconExternalLink,
 } from "@tabler/icons-react";
-import type { GDGEvent, EventPerson, EventPartnerSponsor } from "@/types/event";
 import PhotoGallery from "./PhotoGallery";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -140,20 +147,6 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
   );
 }
 
-// ─── Data fetching ───────────────────────────────────────────────────────────
-
-async function getEvent(slug: string): Promise<GDGEvent | null> {
-  const res = await fetch(`/api/event/${slug}`, {
-
-    next: {
-      revalidate: 36000,
-    },
-  });
-
-  if (!res.ok) return null;
-  return res.json();
-}
-
 // ─── Page ───────────────────────────────────────────────────────────────────
 
 export default async function EventPage({
@@ -162,7 +155,7 @@ export default async function EventPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const event = await getEvent(slug);
+  const event = await getGDGEvent(slug);
 
   if (!event) {
     notFound();
