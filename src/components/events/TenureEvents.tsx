@@ -159,10 +159,7 @@ function EventCard({
 
         {/* RSVP button — only for upcoming events */}
         {future && (
-          <a
-            href={event.url}
-            target="_blank"
-            rel="noopener noreferrer"
+          <div
             className="mt-2 self-start inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-150 shadow-sm"
           >
             {/* Google "G" coloured dots accent */}
@@ -172,8 +169,8 @@ function EventCard({
               <span className="w-[5px] h-[5px] rounded-full bg-[#FBBC05]" />
               <span className="w-[5px] h-[5px] rounded-full bg-[#34A853]" />
             </span>
-            RSVP
-          </a>
+            Happening soon!
+          </div>
         )}
       </div>
     </div>

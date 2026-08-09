@@ -6,36 +6,28 @@ import RounderBorderAbout from "@/components/custom/RounderBorderWapper";
 import { IconBrandLinkedin } from "@tabler/icons-react";
 
 // Server-side fetch
+import { getTeamMembers } from "@/lib/getTeamMembers";
+
 async function getTeamData() {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/team`
-  );
+  const allMembers = await getTeamMembers();
 
-  if (!response.ok) {
-    return { faculty: null, lead: null, members: [] };
-  }
+  // Define a default faculty member object to use if no faculty is found
+  const defaultFacultyMember = {
+    name: "Dr. Vishal Gupta",
+    title: process.env.FACULTY_ADVISOR_TITLE || "Faculty Advisor",
+    bio: "Associate Professor at MMEC",
+    tags: ["Information Retrieval", "Automata Theory"],
+    avatar: "/images/vishalsir.jpeg", // Default avatar
+    linkedin: "https://www.linkedin.com/in/sahara-vishal/", // Default LinkedIn
+    is_faculty: true,
+    is_lead: false,
+  };
 
-  const data = await response.json();
-  const allMembers = data.members || [];
-
-  // Find faculty advisor
   let faculty =
-    allMembers.find((member: any) => member.title === "Faculty Advisor") || null;
+    allMembers.find((member: any) => member.title === "Faculty Advisor") || defaultFacultyMember;
 
-  // Temporary fallback
-  faculty = faculty || {};
-  faculty.bio =
-    faculty.bio ||
-    "Associate Professor at MMEC";
-  faculty.tags = faculty.tags || [
-    "Information Retrieval",
-    "Automata Theory",
-  ];
-
-  // Find lead
   const lead = allMembers.find((member: any) => member.is_lead) || null;
 
-  // Remove faculty & lead from carousel
   const members = allMembers.filter(
     (member: any) => !member.is_faculty && !member.is_lead
   );

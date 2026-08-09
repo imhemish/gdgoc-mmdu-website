@@ -375,11 +375,16 @@ export default async function EventPage({
           color: #c0c0c0;
           white-space: pre-line;
           text-align: justify;
+          overflow-wrap: anywhere;
+          word-break: break-word;
+          
         }
 
         .description-block a {
           color: #4285F4; /* Google Blue */
           text-decoration: underline;
+          overflow-wrap: anywhere;
+          word-break: break-word;
         }
 
         .description-block a:hover {
