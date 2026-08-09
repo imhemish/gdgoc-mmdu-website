@@ -143,8 +143,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 // ─── Data fetching ───────────────────────────────────────────────────────────
 
 async function getEvent(slug: string): Promise<GDGEvent | null> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  const res = await fetch(`${base}/api/event/${slug}`, {
+  const res = await fetch(`/api/event/${slug}`, {
 
     next: {
       revalidate: 36000,
