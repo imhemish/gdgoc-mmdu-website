@@ -4,7 +4,7 @@ import { Send, CheckCircle, AlertTriangle, Link as LinkIcon } from "lucide-react
 import Head from "next/head";
 
 // 👉 Paste your deployed Google Apps Script Web App URL here (see setup guide)
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbymrAksdG7pdUn4e0kw2lNYRv4zTmXBw7i-pqPZ_BDX69xOCjp_WHWOymRSOmNyWXI/exec";
+const HIRING_SCRIPT_URL = process.env.NEXT_PUBLIC_HIRING_SCRIPT_URL ?? "";
 
 const INTEREST_OPTIONS = [
   "App Development",
@@ -190,7 +190,7 @@ const HiringForm = () => {
 
     try {
       // Sent as text/plain to avoid a CORS preflight against Apps Script
-      const response = await fetch(SCRIPT_URL, {
+      const response = await fetch(HIRING_SCRIPT_URL, {
         method: "POST",
         body: JSON.stringify(payload),
       });
@@ -204,6 +204,9 @@ const HiringForm = () => {
       setSubmitStatus("success");
       setFormData(initialState);
       setErrors({});
+
+      // scroll back to top where the success message is displayed
+      setTimeout(() => { window.scrollTo({ top: 0, behavior: "smooth", }); }, 0);
     } catch (error) {
       setSubmitStatus("error");
     } finally {
