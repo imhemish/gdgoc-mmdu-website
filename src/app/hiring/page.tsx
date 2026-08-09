@@ -1,10 +1,13 @@
 "use client";
 import React, { useRef, useState, FormEvent } from "react";
-import { Send, CheckCircle, AlertTriangle, Link as LinkIcon } from "lucide-react";
+import { Send, CheckCircle, AlertTriangle, Link as LinkIcon, MessageCircle } from "lucide-react";
 import Head from "next/head";
 
 // 👉 Paste your deployed Google Apps Script Web App URL here (see setup guide)
 const HIRING_SCRIPT_URL = process.env.NEXT_PUBLIC_HIRING_SCRIPT_URL ?? "";
+
+// 👉 WhatsApp group invite link
+const WHATSAPP_LINK = "https://chat.whatsapp.com/DXA5NoMZiOJ6lETeJQYnkx?s=cl&p=a&ilr=0";
 
 const INTEREST_OPTIONS = [
   "App Development",
@@ -24,6 +27,7 @@ const DEGREE_OPTIONS = ["B.Tech", "BCA", "B.Sc", "Other"];
 // Order matters here — it's the order we scroll to the first invalid field in.
 const FIELD_ORDER = [
   "name",
+  "email",
   "phone",
   "rollNo",
   "gradYear",
@@ -38,6 +42,7 @@ const FIELD_ORDER = [
 
 interface FormState {
   name: string;
+  email: string;
   phone: string;
   rollNo: string;
   gradYear: string;
@@ -58,6 +63,7 @@ interface FormState {
 
 const initialState: FormState = {
   name: "",
+  email: "",
   phone: "",
   rollNo: "",
   gradYear: "",
@@ -122,6 +128,10 @@ const HiringForm = () => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.name.trim()) newErrors.name = "Name is required.";
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      newErrors.email = "Enter a valid email address.";
+    }
 
     if (!/^[6-9]\d{9}$/.test(formData.phone)) {
       newErrors.phone = "Enter a valid 10-digit Indian mobile number.";
@@ -249,13 +259,27 @@ const HiringForm = () => {
                   Thanks for applying! We've received your details and will
                   let you know the next steps soon.
                 </p>
-                <button
-                  type="button"
-                  onClick={handleSubmitAnother}
-                  className="px-8 py-3 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white transition-all duration-300"
-                >
-                  Submit Another
-                </button>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <button
+                    type="button"
+                    onClick={handleSubmitAnother}
+                    className="px-8 py-3 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white transition-all duration-300"
+                  >
+                    Submit Another
+                  </button>
+                  <a
+                    href={WHATSAPP_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative px-8 py-3 rounded-full transition-all duration-300 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white flex items-center justify-center gap-3"
+                  >
+                    Join WhatsApp Group
+                    <MessageCircle
+                      size={20}
+                      className="transition-transform duration-300 group-hover:translate-x-1"
+                    />
+                  </a>
+                </div>
               </div>
             ) : (
               /* ---------- Form View ---------- */
@@ -264,9 +288,21 @@ const HiringForm = () => {
                   <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500 mb-3">
                     Join The Club
                   </h1>
-                  <p className="text-gray-400 max-w-xl mx-auto">
+                  <p className="text-gray-400 max-w-xl mx-auto mb-6">
                     Fill out the form below to apply. We review all applications.
                   </p>
+                  <a
+                    href={WHATSAPP_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative inline-flex px-8 py-3 rounded-full transition-all duration-300 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white items-center justify-center gap-3"
+                  >
+                    Join WhatsApp Group
+                    <MessageCircle
+                      size={20}
+                      className="transition-transform duration-300 group-hover:translate-x-1"
+                    />
+                  </a>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-8" noValidate>
@@ -287,6 +323,23 @@ const HiringForm = () => {
                         placeholder="Your Full Name"
                       />
                       {errors.name && <p className={errorClasses}>{errors.name}</p>}
+                    </div>
+
+                    {/* Email */}
+                    <div ref={registerFieldRef("email")}>
+                      <label htmlFor="email" className={labelClasses}>
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className={inputClasses}
+                        placeholder="you@example.com"
+                      />
+                      {errors.email && <p className={errorClasses}>{errors.email}</p>}
                     </div>
 
                     {/* Phone */}
