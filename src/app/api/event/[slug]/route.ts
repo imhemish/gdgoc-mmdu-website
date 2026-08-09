@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import { getGDGEvent } from "@/lib/gdg";
+import { getGDGEvent } from "@/lib/event";
 
 export async function GET(
   _req: NextRequest,
