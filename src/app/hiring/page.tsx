@@ -6,6 +6,11 @@ import Head from "next/head";
 // 👉 Paste your deployed Google Apps Script Web App URL here (see setup guide)
 const HIRING_SCRIPT_URL = process.env.NEXT_PUBLIC_HIRING_SCRIPT_URL ?? "";
 
+// 👉 Set NEXT_PUBLIC_HIRING_ACTIVE=false (or 0) to disable the hiring form
+const HIRING_ACTIVE =
+  process.env.NEXT_PUBLIC_HIRING_ACTIVE !== "false" &&
+  process.env.NEXT_PUBLIC_HIRING_ACTIVE !== "0";
+
 // 👉 WhatsApp group invite link
 const WHATSAPP_LINK = "https://chat.whatsapp.com/DXA5NoMZiOJ6lETeJQYnkx?s=cl&p=a&ilr=0";
 
@@ -246,7 +251,21 @@ const HiringForm = () => {
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl relative z-10">
           <div className="bg-neutral-900/80 backdrop-blur-lg border border-gray-800/50 shadow-2xl p-8 sm:p-10 lg:p-12 rounded-3xl">
-            {submitStatus === "success" ? (
+            {!HIRING_ACTIVE ? (
+              /* ---------- Hiring Closed View ---------- */
+              <div className="flex flex-col items-center justify-center text-center py-12 sm:py-16">
+                <div className="w-16 h-16 rounded-full bg-yellow-600/10 border border-yellow-500/30 flex items-center justify-center mb-6">
+                  <AlertTriangle size={32} className="text-yellow-400" />
+                </div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500 mb-3">
+                  Applications Closed
+                </h1>
+                <p className="text-gray-400 max-w-sm">
+                  Hiring form is not active currently. Please contact
+                  administrator if you think this is a mistake.
+                </p>
+              </div>
+            ) : submitStatus === "success" ? (
               /* ---------- Success View ---------- */
               <div className="flex flex-col items-center justify-center text-center py-12 sm:py-16">
                 <div className="w-16 h-16 rounded-full bg-green-600/10 border border-green-500/30 flex items-center justify-center mb-6">

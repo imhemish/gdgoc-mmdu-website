@@ -7,7 +7,7 @@ const HIRING_FORM_PATH = "/hiring"; // adjust to wherever your hiring form page 
 
 interface HiringPopupProps {
   /** Whether hiring is currently active. Pass this from a Server Component
-   *  that reads process.env.HIRING_ACTIVE */
+   *  that reads process.env.NEXT_PUBLIC_HIRING_ACTIVE */
   active: boolean;
 }
 
